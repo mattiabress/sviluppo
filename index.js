@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 
 //app.use methods
 app.use(bodyParser.urlencoded({ extended: false }));
+const port = process.env.PORT || 3000;
 
 //database
 let prodotti = [{
@@ -17,8 +18,6 @@ let prodotti = [{
     "name" : "pere",
     "prezzo" : 30
 }]
-
-let nprodotti = 2 //ci sono già 2 prodotti del array
 
 //routes
 app.get("/add", function(req, res) {
@@ -46,29 +45,28 @@ app.get("/ok", function(req,res){
 app.get("/pop", function(req,res){
     for(let i = 0; i < 26; i++ ){
         let q = {
-            "ID" : nprodotti + 1,
+            "ID" : nprodotti + 1, //you can use prodotti.length instead of nprodotti
             "name" : String.fromCharCode(i + 65),
             "prezzo" : Math.floor(Math.random() * 51)
         }
         prodotti.push(q)
-        nprodotti++ //incremento counter
     }
     res.send("array populated")
 })
 
 //crea un prodotto con dei dati specifici
 app.post("/create", function(req,res){
-    const uName = req.headers['name']
-    const uPrezzo = req.headers['prezzo']
+    
+    const name = req.headers['name'] // req.body.name
+    const prezzo = req.headers['prezzo'] // req.body.prezzo
     
     let prodotto = {
         "ID" : nprodotti + 1,
-        "name" : uName,
-        "prezzo" : uPrezzo
+        "name" : name,
+        "prezzo" : prezzo
     }
 
     prodotti.push(prodotto)
-    nprodotti++ //incremento counter
     res.send("element added")
 })
 
@@ -90,23 +88,26 @@ app.get('/', (req, res) => {
 
 //edit specifico prodotto
 app.put('/edit/:id', (req, res) => {
+   
     const id = req.params.id
-    const nName = req.query.name
-    const nPrezzo = req.query.prezzo
+    const nName = req.query.name // req.body.name
+    const nPrezzo = req.query.prezzo  // req.body.prezzo
 
-    if(id < prodotti.length){
-        prodotti[id - 1] = {
+    
+    //instead
+    if(id>=prodotti.length)
+        return res.send("ID not found")
+    
+    prodotti[id - 1] = {
             "ID" : parseInt(id),
             "name" : nName,
             "prezzo" : nPrezzo 
         }
-        res.send("edited")
-    }else
-        res.send("ID not found")
+    res.send("edited")
 })
 
-//cose che non so
-var port = process.env.PORT || 3000;
+
+//used to open the server port
 app.listen(port, function() {
     console.log("Listening on " + port);
 });
