@@ -9,11 +9,11 @@
 <label for="name">prezzo:</label>
 <input type="text" id="prezzo" name="prezzo"><br><br>
 <button type="button" onclick="loadDoc()">Aggiungi</button>
-
+<button type="button" onclick="update()">aggiorna</button>
 <p id="demo"></p>
 
 <script>
-  function loadDoc() {
+  function loadDoc() { //change the name 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
@@ -25,6 +25,8 @@
     xhttp.setRequestHeader("prezzo", document.getElementById("prezzo").value);
     xhttp.send();
   }
+  
+  //update function ...
   </script>
 
 </body>
